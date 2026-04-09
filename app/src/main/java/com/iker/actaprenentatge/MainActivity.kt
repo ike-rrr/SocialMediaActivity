@@ -20,11 +20,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.ChatBubbleOutline
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -183,7 +181,7 @@ fun PostItem(index: Int) {
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = Icons.Default.Image,
+                imageVector = Icons.Default.Place,
                 contentDescription = "Post image",
                 modifier = Modifier.size(50.dp),
                 tint = Color.LightGray
@@ -218,7 +216,7 @@ fun PostItem(index: Int) {
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    imageVector = Icons.Default.ChatBubbleOutline,
+                    imageVector = Icons.Default.Email,
                     contentDescription = "Comentaris",
                     modifier = Modifier.size(20.dp)
                 )
