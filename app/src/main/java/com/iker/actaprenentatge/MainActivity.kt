@@ -3,9 +3,9 @@ package com.iker.actaprenentatge
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,11 +19,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -33,6 +32,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -68,21 +69,21 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Imatge principal (Placeholder amb Icona)
-                Icon(
-                    imageVector = Icons.Default.AccountCircle,
+                // Imatge de perfil real (perf.jpg)
+                Image(
+                    painter = painterResource(id = R.drawable.perf),
                     contentDescription = "Imatge de perfil",
-                    tint = Color(0xFF6200EE),
                     modifier = Modifier
                         .size(100.dp)
-                        .clip(CircleShape)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Nom
                 Text(
-                    text = "Samus Aran",
+                    text = "Sapphire Star",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -91,7 +92,7 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
 
                 // Descripció
                 Text(
-                    text = "Space Bounty Hunter",
+                    text = "Monster Hunter and Member of The Fifth Fleet",
                     color = Color.Gray,
                     textAlign = TextAlign.Center
                 )
@@ -104,7 +105,7 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     StatItem("142", "Posts")
-                    StatItem("2.5K", "Seguidors")
+                    StatItem("700k", "Seguidors")
                     StatItem("385", "Seguint")
                 }
 
@@ -113,7 +114,8 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
                 // Botó editar perfil
                 Button(
                     onClick = { /* No funcional */ },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp)
                 ) {
                     Text("Editar perfil")
                 }
@@ -122,12 +124,7 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
 
         // Línia separadora
         item {
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color.LightGray)
-            )
+            HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
             Spacer(modifier = Modifier.height(8.dp))
         }
 
@@ -141,9 +138,14 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
             )
         }
 
-        // Llista de publicacions (10 items)
-        items(10) { index ->
-            PostItem(index)
+        // Llista de publicacions (10 items, repetint les fotos first, second, third)
+        items(3) { index ->
+            val imageRes = when (index % 3) {
+                0 -> R.drawable.first
+                1 -> R.drawable.second
+                else -> R.drawable.third
+            }
+            PostItem(index, imageRes)
         }
     }
 }
@@ -165,34 +167,33 @@ fun StatItem(value: String, label: String) {
 }
 
 @Composable
-fun PostItem(index: Int) {
+fun PostItem(index: Int, imageRes: Int) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        // Imatge del post (Placeholder amb Box i Icona)
-        Box(
+        // Imatge del post real
+        Image(
+            painter = painterResource(id = imageRes),
+            contentDescription = "Post image",
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(Color(0xFFF0F0F0)),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Default.Place,
-                contentDescription = "Post image",
-                modifier = Modifier.size(50.dp),
-                tint = Color.LightGray
-            )
-        }
+                .clip(RoundedCornerShape(12.dp)),
+            contentScale = ContentScale.Crop
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         // Descripció de la publicació
+        val caption = when (index % 3) {
+            0 -> "Welcome to the new world!"
+            1 -> "He tried to steal our hunt."
+            else -> "I think we might be cooked."
+        }
         Text(
-            text = "Publicació número ${index + 1}. Explorant nous planetes...",
+            text = "Publicació #${index + 1}. $caption",
             fontSize = 14.sp
         )
 
@@ -201,39 +202,29 @@ fun PostItem(index: Int) {
         // Fila d'accions (Likes i Comentaris)
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = "M'agrada",
-                    tint = Color.Red,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text("${125 + index}", fontSize = 14.sp)
-            }
+            Icon(
+                imageVector = Icons.Default.Favorite,
+                contentDescription = "M'agrada",
+                tint = Color.Red,
+                modifier = Modifier.size(20.dp)
+            )
+            Text("${125 + index}", modifier = Modifier.padding(start = 4.dp, end = 16.dp), fontSize = 14.sp)
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Default.Email,
-                    contentDescription = "Comentaris",
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text("${12 + index}", fontSize = 14.sp)
-            }
+            Icon(
+                imageVector = Icons.Default.Email,
+                contentDescription = "Comentaris",
+                tint = Color.Gray,
+                modifier = Modifier.size(20.dp)
+            )
+            Text("${12 + index}", modifier = Modifier.padding(start = 4.dp), fontSize = 14.sp)
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
         // Línia separadora entre posts
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.LightGray)
-        )
+        HorizontalDivider(thickness = 0.5.dp, color = Color(0xFFEEEEEE))
     }
 }
 
